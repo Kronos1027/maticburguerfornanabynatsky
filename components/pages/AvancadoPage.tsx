@@ -50,11 +50,11 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     setLoading(true);
     setStudyMaterial('');
     try {
-      // Fix: Use process.env.API_KEY as per guidelines.
+      // FIX: Use process.env.API_KEY as per the guidelines.
       const apiKey = process.env.API_KEY;
       if (!apiKey) {
-        // Fix: Update error message to reflect the correct environment variable.
-        throw new Error("Chave API_KEY não encontrada.");
+        // FIX: Update error message to be more generic and not mention VITE_API_KEY.
+        throw new Error("A chave da API não foi encontrada. Verifique as variáveis de ambiente.");
       }
       const ai = new GoogleGenAI({ apiKey });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
@@ -68,7 +68,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      // Fix: Update user-facing error message.
+      // FIX: Update error message to be more generic and not mention VITE_API_KEY.
       setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está configurada corretamente e tente novamente.");
     } finally {
       setLoading(false);

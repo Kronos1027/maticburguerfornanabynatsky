@@ -41,13 +41,13 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [ai, setAi] = useState<GoogleGenAI | null>(null);
 
     useEffect(() => {
-        // Fix: Use process.env.API_KEY as per guidelines.
+        // FIX: Use process.env.API_KEY as per the guidelines.
         const apiKey = process.env.API_KEY;
         if (apiKey) {
             setAi(new GoogleGenAI({ apiKey }));
         } else {
-            // Fix: Update error message to reflect the correct environment variable.
-            setError("Chave da API não encontrada. Verifique se a variável API_KEY está configurada corretamente no seu ambiente.");
+            // FIX: Update error message to be more generic and not mention VITE_API_KEY.
+            setError("A chave da API não foi encontrada. Verifique se está configurada corretamente nas variáveis de ambiente.");
         }
     }, []);
 
@@ -92,8 +92,8 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                // Fix: Update user-facing error message.
-                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada corretamente e tente novamente.");
+                // FIX: Update error message to be more generic and not mention VITE_API_KEY.
+                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada e tente novamente.");
             } finally {
                 setLoading('');
             }
