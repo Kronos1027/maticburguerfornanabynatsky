@@ -49,18 +49,24 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
     };
 
     const handleAskAI = async () => {
+        // Fix: Use process.env.API_KEY and provide a generic error message as per guidelines.
+        const apiKey = process.env.API_KEY;
         if (!prompt && !image) {
             alert("Por favor, digite uma pergunta ou envie uma imagem.");
             return;
         }
+         if (!apiKey) {
+            setResponse("Oops! Chave da API não configurada.");
+            return;
+        }
+
         setLoading(true);
         setResponse('');
         setSuccessfulPrompt(null);
         setShowLearner(false);
         
         try {
-            // Fix: Use process.env.API_KEY as per the guidelines.
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey });
             
             const fullPrompt = `Se houver uma imagem, analise-a. A pergunta do usuário é: "${prompt}". Você é um tutor de matemática amigável e prestativo para todas as idades, explicando conceitos de forma clara e passo a passo. Sua personalidade é fofa e encorajadora, adequada a um tema de gatos e hambúrgueres. Sempre responda em português do Brasil.`;
             const parts: any[] = [{ text: fullPrompt }];
@@ -80,7 +86,6 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            // Fix: Updated error message to be generic.
             setResponse("Oops! Algo deu errado na cozinha da IA. Por favor, tente novamente.");
         } finally {
             setLoading(false);

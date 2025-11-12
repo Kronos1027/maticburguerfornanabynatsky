@@ -47,11 +47,17 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
   }, []);
 
   const generateStudyMaterial = async (topic: string) => {
+    // Fix: Use process.env.API_KEY and provide a generic error message as per guidelines.
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+      setStudyMaterial("Oops! Chave da API não configurada.");
+      return;
+    }
+
     setLoading(true);
     setStudyMaterial('');
     try {
-      // Fix: Use process.env.API_KEY as per the guidelines.
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
       
       const result = await ai.models.generateContent({
@@ -63,7 +69,6 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      // Fix: Updated error message to be generic.
       setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Por favor, tente novamente.");
     } finally {
       setLoading(false);

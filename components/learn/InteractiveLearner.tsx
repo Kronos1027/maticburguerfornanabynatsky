@@ -38,12 +38,16 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    // Fix: Removed ai state to initialize on-demand as per guidelines.
+    // Fix: Use process.env.API_KEY as per guidelines.
+    const apiKey = process.env.API_KEY;
 
     useEffect(() => {
         const generateInitialContent = async () => {
-            // Fix: Initialize GoogleGenAI with process.env.API_KEY as per the guidelines.
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            if (!apiKey) {
+                setError("Chave da API não configurada.");
+                return;
+            }
+            const ai = new GoogleGenAI({ apiKey });
 
             setLoading('Preparando sua aula particular...');
             setError(null);
@@ -81,7 +85,6 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                // Fix: Updated error message to be generic.
                 setError("Não foi possível gerar o conteúdo. Por favor, tente novamente.");
             } finally {
                 setLoading('');
@@ -89,12 +92,12 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
         };
 
         generateInitialContent();
-    }, [initialTopic]);
+    }, [initialTopic, apiKey]);
 
     const handleAnswer = async (selectedIndex: number) => {
-        if (selectedAnswer !== null) return;
-        // Fix: Initialize GoogleGenAI with process.env.API_KEY as per the guidelines.
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        if (selectedAnswer !== null || !apiKey) return;
+        
+        const ai = new GoogleGenAI({ apiKey });
         setSelectedAnswer(selectedIndex);
 
         const currentQ = remediationQuestion || questions[currentQuestionIndex];
@@ -104,24 +107,20 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
             setFeedback('Correto! 🎉');
             setScore(prev => prev + 10);
             if (remediationQuestion) {
-                // If they got the remediation question right, clear it and move on
                 setRemediationQuestion(null);
                 setErrorExplanation('');
             }
         } else {
-            // Incorrect answer
             const wrongAnswerText = currentQ.options[selectedIndex];
             const correctAnswerText = currentQ.options[correctIndex];
             setFeedback(`Quase! A resposta certa era "${correctAnswerText}".`);
             setLoading("Analisando seu erro e criando uma nova questão...");
 
             try {
-                // Get explanation for the error
                 const explanationPrompt = `O usuário estava respondendo à pergunta de matemática: "${currentQ.question}". A resposta correta é "${correctAnswerText}", mas ele respondeu "${wrongAnswerText}". Explique de forma simples e encorajadora por que a resposta do usuário está incorreta e qual é o conceito correto a ser aplicado. Mantenha o tom do site 'Burguer Matic'.`;
                 const explanationResult = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: explanationPrompt });
                 setErrorExplanation(explanationResult.text);
 
-                // Get a new, similar question
                 const remediationSchema = {
                     type: Type.OBJECT,
                     properties: {
@@ -140,7 +139,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
             } catch (err) {
                 console.error(err);
                 setErrorExplanation("Não consegui gerar a explicação do erro. Clique em 'Próxima' para continuar.");
-                setRemediationQuestion(null); // skip remediation on error
+                setRemediationQuestion(null);
             } finally {
                 setLoading('');
             }
@@ -151,7 +150,6 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
         setSelectedAnswer(null);
         setFeedback('');
         setErrorExplanation('');
-        // Only advance if we are not in a remediation loop
         if (!remediationQuestion) {
              setCurrentQuestionIndex(prev => prev + 1);
         }
@@ -159,8 +157,8 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     
     if (loading && !remediationQuestion) return <LoadingSpinner message={loading} />;
     if (error) return <ErrorDisplay message={error} />;
-    // Fix: Removed check for ai initialization.
-    if (!explanation || questions.length === 0) return null; // Render nothing until content is ready
+    if (!apiKey) return <ErrorDisplay message="Chave da API não encontrada. Verifique se a chave está configurada no Vercel como VITE_API_KEY." />
+    if (!explanation || questions.length === 0) return <LoadingSpinner message="Carregando conteúdo..." />;
     
     const isQuizFinished = currentQuestionIndex >= questions.length;
     const currentQuestion = remediationQuestion || (isQuizFinished ? null : questions[currentQuestionIndex]);
