@@ -38,23 +38,12 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    const [ai, setAi] = useState<GoogleGenAI | null>(null);
-
-    useEffect(() => {
-        // FIX: Use process.env.API_KEY as per the guidelines.
-        const apiKey = process.env.API_KEY;
-        if (apiKey) {
-            setAi(new GoogleGenAI({ apiKey }));
-        } else {
-            // FIX: Update error message to be more generic and not mention VITE_API_KEY.
-            setError("A chave da API não foi encontrada. Verifique se está configurada corretamente nas variáveis de ambiente.");
-        }
-    }, []);
-
+    // Fix: Removed ai state to initialize on-demand as per guidelines.
 
     useEffect(() => {
         const generateInitialContent = async () => {
-            if (!ai) return;
+            // Fix: Initialize GoogleGenAI with process.env.API_KEY as per the guidelines.
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
             setLoading('Preparando sua aula particular...');
             setError(null);
@@ -92,18 +81,20 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                // FIX: Update error message to be more generic and not mention VITE_API_KEY.
-                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada e tente novamente.");
+                // Fix: Updated error message to be generic.
+                setError("Não foi possível gerar o conteúdo. Por favor, tente novamente.");
             } finally {
                 setLoading('');
             }
         };
 
         generateInitialContent();
-    }, [initialTopic, ai]);
+    }, [initialTopic]);
 
     const handleAnswer = async (selectedIndex: number) => {
-        if (selectedAnswer !== null || !ai) return;
+        if (selectedAnswer !== null) return;
+        // Fix: Initialize GoogleGenAI with process.env.API_KEY as per the guidelines.
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         setSelectedAnswer(selectedIndex);
 
         const currentQ = remediationQuestion || questions[currentQuestionIndex];
@@ -168,7 +159,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     
     if (loading && !remediationQuestion) return <LoadingSpinner message={loading} />;
     if (error) return <ErrorDisplay message={error} />;
-    if (!ai) return <ErrorDisplay message="Cliente de IA não inicializado. Verifique a configuração da API Key." />;
+    // Fix: Removed check for ai initialization.
     if (!explanation || questions.length === 0) return null; // Render nothing until content is ready
     
     const isQuizFinished = currentQuestionIndex >= questions.length;

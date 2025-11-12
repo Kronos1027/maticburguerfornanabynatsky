@@ -41,13 +41,8 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
             setQuestions([]);
 
             try {
-                // FIX: Use process.env.API_KEY as per the guidelines.
-                const apiKey = process.env.API_KEY;
-                if (!apiKey) {
-                  // FIX: Update error message to be more generic and not mention VITE_API_KEY.
-                  throw new Error("A chave da API não foi encontrada. Verifique as variáveis de ambiente.");
-                }
-                const ai = new GoogleGenAI({ apiKey });
+                // Fix: Use process.env.API_KEY as per the guidelines.
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
                 const responseSchema = {
                     type: Type.OBJECT,
@@ -87,8 +82,8 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
 
             } catch (err) {
                 console.error(err);
-                // FIX: Update error message to be more generic and not mention VITE_API_KEY.
-                setError("Não foi possível gerar o quiz. Verifique se a chave da API está configurada e tente novamente.");
+                // Fix: Updated error message to be generic.
+                setError("Não foi possível gerar o quiz. Por favor, tente novamente.");
             } finally {
                 setLoading(false);
             }

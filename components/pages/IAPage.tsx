@@ -59,13 +59,8 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
         setShowLearner(false);
         
         try {
-            // FIX: Use process.env.API_KEY as per the guidelines.
-            const apiKey = process.env.API_KEY;
-            if (!apiKey) {
-              // FIX: Update error message to be more generic and not mention VITE_API_KEY.
-              throw new Error("A chave da API não foi encontrada. Verifique as variáveis de ambiente.");
-            }
-            const ai = new GoogleGenAI({ apiKey });
+            // Fix: Use process.env.API_KEY as per the guidelines.
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
             const fullPrompt = `Se houver uma imagem, analise-a. A pergunta do usuário é: "${prompt}". Você é um tutor de matemática amigável e prestativo para todas as idades, explicando conceitos de forma clara e passo a passo. Sua personalidade é fofa e encorajadora, adequada a um tema de gatos e hambúrgueres. Sempre responda em português do Brasil.`;
             const parts: any[] = [{ text: fullPrompt }];
@@ -85,8 +80,8 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            // FIX: Update error message to be more generic and not mention VITE_API_KEY.
-            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está configurada corretamente e tente novamente.");
+            // Fix: Updated error message to be generic.
+            setResponse("Oops! Algo deu errado na cozinha da IA. Por favor, tente novamente.");
         } finally {
             setLoading(false);
         }
