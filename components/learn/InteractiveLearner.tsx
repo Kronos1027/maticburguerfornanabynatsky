@@ -38,7 +38,8 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+    // FIX: Use process.env.API_KEY as per the guidelines.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     useEffect(() => {
         const generateInitialContent = async () => {
@@ -78,7 +79,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo de aprendizado. Tente outro tópico.");
+                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada no Vercel como VITE_API_KEY e tente novamente.");
             } finally {
                 setLoading('');
             }
@@ -172,7 +173,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
         <div className="bg-[#FEEFCE] p-6 md:p-10 rounded-2xl shadow-lg border-4 border-amber-300 w-full mx-auto space-y-6">
             {currentQuestionIndex === 0 && !remediationQuestion && (
                 <div>
-                    <h2 className="text-3xl font-bold text-amber-900 mb-4 text-center">Vamos aprender sobre {initialTopic}!</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-amber-900 mb-4 text-center">Vamos aprender sobre {initialTopic}!</h2>
                     <div className="prose max-w-none bg-white/50 p-4 rounded-lg text-amber-900" style={{whiteSpace: 'pre-wrap'}}>{explanation}</div>
                 </div>
             )}
@@ -188,7 +189,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
                 </div>
                 
                 <div className="text-center mb-6 bg-white/50 p-4 rounded-lg">
-                    <p className="text-2xl font-bold text-amber-900">{currentQuestion?.question}</p>
+                    <p className="text-xl sm:text-2xl font-bold text-amber-900">{currentQuestion?.question}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

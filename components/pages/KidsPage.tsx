@@ -21,7 +21,7 @@ const KidsPage: React.FC<KidsPageProps> = ({ onBack }) => {
     <div className="relative py-12 md:py-16">
        <div className="max-w-4xl mx-auto px-4">
         <BackButton onClick={onBack} />
-        <h1 className="text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
             Desafios do Burguer Matic Kids!
         </h1>
         <p className="text-center text-lg text-amber-800 mb-12">

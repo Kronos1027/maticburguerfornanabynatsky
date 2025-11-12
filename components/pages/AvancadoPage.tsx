@@ -50,7 +50,8 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     setLoading(true);
     setStudyMaterial('');
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+      // FIX: Use process.env.API_KEY as per the guidelines.
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
       
       const result = await ai.models.generateContent({
@@ -62,7 +63,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      setStudyMaterial("Oops! Aconteceu um erro na nossa cozinha. Por favor, tente novamente.");
+      setStudyMaterial("Oops! Aconteceu um erro na nossa cozinha. Verifique se a chave da API está configurada corretamente no Vercel como VITE_API_KEY e tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -74,7 +75,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     <div className="relative py-12 md:py-16">
        <div className="max-w-4xl mx-auto px-4">
         <BackButton onClick={onBack} />
-        <h1 className="text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
             Menu Avançado
         </h1>
 
@@ -82,15 +83,15 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
             <h2 className="text-2xl font-bold text-amber-900 mb-4 text-center">Dashboard de Estudos</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 <div>
-                    <p className="text-3xl font-black text-amber-700">{studyStats.startDate}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-amber-700">{studyStats.startDate}</p>
                     <p className="text-sm font-semibold text-amber-800">Data de Início</p>
                 </div>
                 <div>
-                    <p className="text-3xl font-black text-amber-700">{studyStats.totalItems}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-amber-700">{studyStats.totalItems}</p>
                     <p className="text-sm font-semibold text-amber-800">Itens Salvos</p>
                 </div>
                 <div>
-                    <p className="text-3xl font-black text-amber-700">{studyStats.studyDays}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-amber-700">{studyStats.studyDays}</p>
                     <p className="text-sm font-semibold text-amber-800">Dias de Estudo</p>
                 </div>
             </div>

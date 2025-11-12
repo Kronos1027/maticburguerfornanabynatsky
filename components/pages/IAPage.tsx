@@ -59,7 +59,8 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
         setShowLearner(false);
         
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+            // FIX: Use process.env.API_KEY as per the guidelines.
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
             const fullPrompt = `Se houver uma imagem, analise-a. A pergunta do usuário é: "${prompt}". Você é um tutor de matemática amigável e prestativo para todas as idades, explicando conceitos de forma clara e passo a passo. Sua personalidade é fofa e encorajadora, adequada a um tema de gatos e hambúrgueres. Sempre responda em português do Brasil.`;
             const parts: any[] = [{ text: fullPrompt }];
@@ -79,7 +80,7 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            setResponse("Oops! Algo deu errado na cozinha da IA. Tente novamente.");
+            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está configurada corretamente no Vercel como VITE_API_KEY e tente novamente.");
         } finally {
             setLoading(false);
         }
@@ -95,7 +96,7 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
     <div className="relative py-12 md:py-16">
        <div className="max-w-4xl mx-auto px-4">
         <BackButton onClick={onBack} />
-        <h1 className="text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
             Chef IA do Burguer Matic!
         </h1>
         <p className="text-center text-lg text-amber-800 mb-12">

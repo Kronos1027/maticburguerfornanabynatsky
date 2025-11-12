@@ -29,12 +29,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     <header className="p-4 sticky top-0 bg-[#FFFBF0]/80 backdrop-blur-sm z-50">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
-          <button onClick={() => onNavigate('home')} className="text-2xl font-black text-amber-900 hover:text-amber-600 transition-colors duration-200">
+          <button onClick={() => onNavigate('home')} className="text-xl sm:text-2xl font-black text-amber-900 hover:text-amber-600 transition-colors duration-200">
             BurguerMatic
           </button>
         </div>
         <nav className="flex-1">
-          <ul className="flex justify-center items-end space-x-2 md:space-x-8">
+          <ul className="flex justify-center items-end space-x-1 sm:space-x-2 md:space-x-8">
             {navItems.map((item) => (
               <li key={item.name}>
                 <button

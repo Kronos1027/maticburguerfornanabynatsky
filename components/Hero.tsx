@@ -48,11 +48,11 @@ const Hero: React.FC = () => {
         <div className="relative flex flex-col items-center justify-center">
 
           {/* Decorative elements */}
-          <div className="absolute -top-12 -left-10 text-5xl font-black text-green-500 opacity-70 rotate-[-15deg]">+</div>
-          <div className="absolute -top-8 -right-8 text-4xl font-black text-red-500 opacity-70 rotate-[20deg]">x</div>
-          <div className="absolute top-10 -left-16 text-5xl font-black text-orange-400 opacity-70">1</div>
-          <div className="absolute bottom-4 -left-8 text-5xl font-black text-teal-400 opacity-70">2</div>
-          <div className="absolute top-12 -right-16 text-5xl font-black text-blue-400 opacity-70">3</div>
+          <div className="absolute -top-12 -left-10 text-5xl font-black text-green-500 opacity-70 rotate-[-15deg] hidden sm:block">+</div>
+          <div className="absolute -top-8 -right-8 text-4xl font-black text-red-500 opacity-70 rotate-[20deg] hidden sm:block">x</div>
+          <div className="absolute top-10 -left-16 text-5xl font-black text-orange-400 opacity-70 hidden sm:block">1</div>
+          <div className="absolute bottom-4 -left-8 text-5xl font-black text-teal-400 opacity-70 hidden sm:block">2</div>
+          <div className="absolute top-12 -right-16 text-5xl font-black text-blue-400 opacity-70 hidden sm:block">3</div>
 
           <div className="absolute -bottom-10 -left-20 transform scale-x-[-1] opacity-80 hidden md:block">
              <HeroCat1 />
@@ -64,15 +64,15 @@ const Hero: React.FC = () => {
              <HeroCat3 />
           </div>
 
-          <h1 className="text-7xl md:text-9xl font-black text-[#78350F] text-center leading-none" style={textShadowStyle}>
+          <h1 className="text-6xl sm:text-7xl md:text-9xl font-black text-[#78350F] text-center leading-none" style={textShadowStyle}>
             Burguer
           </h1>
-          <h1 className="text-7xl md:text-9xl font-black text-[#78350F] text-center -mt-4 md:-mt-8" style={textShadowStyle}>
+          <h1 className="text-6xl sm:text-7xl md:text-9xl font-black text-[#78350F] text-center -mt-3 sm:-mt-4 md:-mt-8" style={textShadowStyle}>
             Matic
           </h1>
         </div>
 
-        <p className="text-center text-xl md:text-2xl font-semibold text-amber-800 mt-8">
+        <p className="text-center text-lg sm:text-xl md:text-2xl font-semibold text-amber-800 mt-8">
           Matemática saborosa para todos os gostos!
         </p>
         

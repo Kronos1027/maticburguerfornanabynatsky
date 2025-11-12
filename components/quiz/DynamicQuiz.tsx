@@ -41,7 +41,8 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
             setQuestions([]);
 
             try {
-                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+                // FIX: Use process.env.API_KEY as per the guidelines.
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
                 const responseSchema = {
                     type: Type.OBJECT,
@@ -81,7 +82,7 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o quiz. Por favor, tente novamente.");
+                setError("Não foi possível gerar o quiz. Verifique se a chave da API está configurada no Vercel como VITE_API_KEY e tente novamente.");
             } finally {
                 setLoading(false);
             }
@@ -143,7 +144,7 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
             </div>
             
             <div className="text-center mb-6 bg-white/50 p-4 rounded-lg">
-                <p className="text-2xl font-bold text-amber-900">{currentQuestion?.question}</p>
+                <p className="text-xl sm:text-2xl font-bold text-amber-900">{currentQuestion?.question}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
