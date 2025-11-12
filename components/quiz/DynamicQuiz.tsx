@@ -41,10 +41,11 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
             setQuestions([]);
 
             try {
-                // FIX: Per Gemini API guidelines, API key must be obtained from process.env.API_KEY.
+                // Fix: Use process.env.API_KEY as per guidelines.
                 const apiKey = process.env.API_KEY;
                 if (!apiKey) {
-                  throw new Error("API Key not found");
+                  // Fix: Update error message to reflect the correct environment variable.
+                  throw new Error("Chave API_KEY não encontrada.");
                 }
                 const ai = new GoogleGenAI({ apiKey });
 
@@ -86,7 +87,7 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
 
             } catch (err) {
                 console.error(err);
-                // FIX: Updated error message to be more generic about API key configuration.
+                // Fix: Update user-facing error message.
                 setError("Não foi possível gerar o quiz. Verifique se a chave da API está configurada corretamente e tente novamente.");
             } finally {
                 setLoading(false);

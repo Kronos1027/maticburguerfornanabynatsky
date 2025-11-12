@@ -50,10 +50,11 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     setLoading(true);
     setStudyMaterial('');
     try {
-      // FIX: Per Gemini API guidelines, API key must be obtained from process.env.API_KEY.
+      // Fix: Use process.env.API_KEY as per guidelines.
       const apiKey = process.env.API_KEY;
       if (!apiKey) {
-        throw new Error("API Key not found");
+        // Fix: Update error message to reflect the correct environment variable.
+        throw new Error("Chave API_KEY não encontrada.");
       }
       const ai = new GoogleGenAI({ apiKey });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
@@ -67,8 +68,8 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      // FIX: Updated error message to be more generic about API key configuration.
-      setStudyMaterial("Oops! Aconteceu um erro na nossa cozinha. Verifique se a chave da API está configurada corretamente e tente novamente.");
+      // Fix: Update user-facing error message.
+      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está configurada corretamente e tente novamente.");
     } finally {
       setLoading(false);
     }

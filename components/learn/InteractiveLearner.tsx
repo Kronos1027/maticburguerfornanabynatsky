@@ -38,17 +38,16 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    // CORRECTED: Use a single instance of GoogleGenAI
     const [ai, setAi] = useState<GoogleGenAI | null>(null);
 
     useEffect(() => {
-        // FIX: Per Gemini API guidelines, API key must be obtained from process.env.API_KEY.
+        // Fix: Use process.env.API_KEY as per guidelines.
         const apiKey = process.env.API_KEY;
         if (apiKey) {
             setAi(new GoogleGenAI({ apiKey }));
         } else {
-            // FIX: Updated error message to be more generic about API key configuration.
-            setError("Chave da API não encontrada. Verifique se a chave da API está configurada corretamente.");
+            // Fix: Update error message to reflect the correct environment variable.
+            setError("Chave da API não encontrada. Verifique se a variável API_KEY está configurada corretamente no seu ambiente.");
         }
     }, []);
 
@@ -93,7 +92,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                // FIX: Updated error message to be more generic about API key configuration.
+                // Fix: Update user-facing error message.
                 setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada corretamente e tente novamente.");
             } finally {
                 setLoading('');
