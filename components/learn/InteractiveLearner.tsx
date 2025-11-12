@@ -38,11 +38,25 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    // FIX: Use process.env.API_KEY as per the guidelines.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // CORRECTED: Use a single instance of GoogleGenAI
+    const [ai, setAi] = useState<GoogleGenAI | null>(null);
+
+    useEffect(() => {
+        // FIX: Per Gemini API guidelines, API key must be obtained from process.env.API_KEY.
+        const apiKey = process.env.API_KEY;
+        if (apiKey) {
+            setAi(new GoogleGenAI({ apiKey }));
+        } else {
+            // FIX: Updated error message to be more generic about API key configuration.
+            setError("Chave da API não encontrada. Verifique se a chave da API está configurada corretamente.");
+        }
+    }, []);
+
 
     useEffect(() => {
         const generateInitialContent = async () => {
+            if (!ai) return;
+
             setLoading('Preparando sua aula particular...');
             setError(null);
             
@@ -79,17 +93,18 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada no Vercel como VITE_API_KEY e tente novamente.");
+                // FIX: Updated error message to be more generic about API key configuration.
+                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está configurada corretamente e tente novamente.");
             } finally {
                 setLoading('');
             }
         };
 
         generateInitialContent();
-    }, [initialTopic]);
+    }, [initialTopic, ai]);
 
     const handleAnswer = async (selectedIndex: number) => {
-        if (selectedAnswer !== null) return;
+        if (selectedAnswer !== null || !ai) return;
         setSelectedAnswer(selectedIndex);
 
         const currentQ = remediationQuestion || questions[currentQuestionIndex];
@@ -154,6 +169,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     
     if (loading && !remediationQuestion) return <LoadingSpinner message={loading} />;
     if (error) return <ErrorDisplay message={error} />;
+    if (!ai) return <ErrorDisplay message="Cliente de IA não inicializado. Verifique a configuração da API Key." />;
     if (!explanation || questions.length === 0) return null; // Render nothing until content is ready
     
     const isQuizFinished = currentQuestionIndex >= questions.length;

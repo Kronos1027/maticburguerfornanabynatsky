@@ -59,8 +59,12 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
         setShowLearner(false);
         
         try {
-            // FIX: Use process.env.API_KEY as per the guidelines.
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            // FIX: Per Gemini API guidelines, API key must be obtained from process.env.API_KEY.
+            const apiKey = process.env.API_KEY;
+            if (!apiKey) {
+              throw new Error("API Key not found");
+            }
+            const ai = new GoogleGenAI({ apiKey });
             
             const fullPrompt = `Se houver uma imagem, analise-a. A pergunta do usuário é: "${prompt}". Você é um tutor de matemática amigável e prestativo para todas as idades, explicando conceitos de forma clara e passo a passo. Sua personalidade é fofa e encorajadora, adequada a um tema de gatos e hambúrgueres. Sempre responda em português do Brasil.`;
             const parts: any[] = [{ text: fullPrompt }];
@@ -80,7 +84,8 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está configurada corretamente no Vercel como VITE_API_KEY e tente novamente.");
+            // FIX: Updated error message to be more generic about API key configuration.
+            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está configurada corretamente e tente novamente.");
         } finally {
             setLoading(false);
         }

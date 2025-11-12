@@ -41,8 +41,12 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
             setQuestions([]);
 
             try {
-                // FIX: Use process.env.API_KEY as per the guidelines.
-                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+                // FIX: Per Gemini API guidelines, API key must be obtained from process.env.API_KEY.
+                const apiKey = process.env.API_KEY;
+                if (!apiKey) {
+                  throw new Error("API Key not found");
+                }
+                const ai = new GoogleGenAI({ apiKey });
 
                 const responseSchema = {
                     type: Type.OBJECT,
@@ -82,7 +86,8 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o quiz. Verifique se a chave da API está configurada no Vercel como VITE_API_KEY e tente novamente.");
+                // FIX: Updated error message to be more generic about API key configuration.
+                setError("Não foi possível gerar o quiz. Verifique se a chave da API está configurada corretamente e tente novamente.");
             } finally {
                 setLoading(false);
             }
