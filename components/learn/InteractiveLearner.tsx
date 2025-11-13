@@ -38,16 +38,22 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
+    // Get the API key once and store it.
+    // FIX: Use process.env.API_KEY as per the guidelines.
+    const apiKey = process.env.API_KEY;
 
     useEffect(() => {
         const generateInitialContent = async () => {
+            if (!apiKey) {
+                // FIX: Updated error message to reference API_KEY.
+                setError("Chave da API não encontrada. Verifique se a variável API_KEY está configurada.");
+                return;
+            }
             setLoading('Preparando sua aula particular...');
             setError(null);
             
             try {
-                // Fix: Use process.env.API_KEY to access the API key as per guidelines, which also resolves the 'import.meta.env' error.
-                // The check for the key's existence is removed based on the guideline to assume it is pre-configured.
-                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+                const ai = new GoogleGenAI({ apiKey });
 
                 const schema = {
                     type: Type.OBJECT,
@@ -81,17 +87,21 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo. Verifique o console para mais detalhes.");
+                setError("Não foi possível gerar o conteúdo. Verifique se sua API Key é válida e tente novamente.");
             } finally {
                 setLoading('');
             }
         };
 
         generateInitialContent();
-    }, [initialTopic]);
+    }, [initialTopic, apiKey]);
 
     const handleAnswer = async (selectedIndex: number) => {
         if (selectedAnswer !== null) return;
+        if (!apiKey) {
+            setErrorExplanation("Não consigo analisar o erro sem uma API Key.");
+            return;
+        }
         
         setSelectedAnswer(selectedIndex);
 
@@ -112,8 +122,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
             setLoading("Analisando seu erro e criando uma nova questão...");
 
             try {
-                // Fix: Use process.env.API_KEY directly as per guidelines, removing the need for a manual check.
-                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+                const ai = new GoogleGenAI({ apiKey });
                 const explanationPrompt = `O usuário estava respondendo à pergunta de matemática: "${currentQ.question}". A resposta correta é "${correctAnswerText}", mas ele respondeu "${wrongAnswerText}". Explique de forma simples e encorajadora por que a resposta do usuário está incorreta e qual é o conceito correto a ser aplicado. Mantenha o tom do site 'Burguer Matic'.`;
                 const explanationResult = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: explanationPrompt });
                 setErrorExplanation(explanationResult.text);
