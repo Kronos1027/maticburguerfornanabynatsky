@@ -49,14 +49,15 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
     };
 
     const handleAskAI = async () => {
-        // Fix: Use process.env.API_KEY and provide a generic error message as per guidelines.
+        // FIX: Use process.env.API_KEY per coding guidelines.
         const apiKey = process.env.API_KEY;
         if (!prompt && !image) {
             alert("Por favor, digite uma pergunta ou envie uma imagem.");
             return;
         }
          if (!apiKey) {
-            setResponse("Oops! Chave da API não configurada.");
+            // FIX: Updated error message to be more generic.
+            setResponse("Oops! Chave da API não encontrada.");
             return;
         }
 
@@ -86,7 +87,7 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            setResponse("Oops! Algo deu errado na cozinha da IA. Por favor, tente novamente.");
+            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está correta e tente novamente.");
         } finally {
             setLoading(false);
         }

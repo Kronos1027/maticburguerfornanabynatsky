@@ -47,10 +47,11 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
   }, []);
 
   const generateStudyMaterial = async (topic: string) => {
-    // Fix: Use process.env.API_KEY and provide a generic error message as per guidelines.
+    // FIX: Use process.env.API_KEY per coding guidelines.
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
-      setStudyMaterial("Oops! Chave da API não configurada.");
+      // FIX: Updated error message to be more generic.
+      setStudyMaterial("Oops! Chave da API não encontrada.");
       return;
     }
 
@@ -69,7 +70,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Por favor, tente novamente.");
+      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está correta e tente novamente.");
     } finally {
       setLoading(false);
     }

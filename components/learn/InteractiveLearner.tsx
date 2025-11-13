@@ -38,13 +38,14 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    // Fix: Use process.env.API_KEY as per guidelines.
+    // FIX: Use process.env.API_KEY per coding guidelines.
     const apiKey = process.env.API_KEY;
 
     useEffect(() => {
         const generateInitialContent = async () => {
             if (!apiKey) {
-                setError("Chave da API não configurada.");
+                // FIX: Updated error message to be more generic.
+                setError("Chave da API não encontrada.");
                 return;
             }
             const ai = new GoogleGenAI({ apiKey });
@@ -85,7 +86,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo. Por favor, tente novamente.");
+                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está correta e tente novamente.");
             } finally {
                 setLoading('');
             }
@@ -157,7 +158,8 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     
     if (loading && !remediationQuestion) return <LoadingSpinner message={loading} />;
     if (error) return <ErrorDisplay message={error} />;
-    if (!apiKey) return <ErrorDisplay message="Chave da API não encontrada. Verifique se a chave está configurada no Vercel como VITE_API_KEY." />
+    // FIX: Updated error message to be more generic.
+    if (!apiKey) return <ErrorDisplay message="Chave da API não encontrada." />
     if (!explanation || questions.length === 0) return <LoadingSpinner message="Carregando conteúdo..." />;
     
     const isQuizFinished = currentQuestionIndex >= questions.length;

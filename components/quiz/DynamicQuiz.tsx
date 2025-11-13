@@ -40,10 +40,11 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
             setError(null);
             setQuestions([]);
 
-            // Fix: Use process.env.API_KEY and provide a generic error message as per guidelines.
+            // FIX: Use process.env.API_KEY per coding guidelines.
             const apiKey = process.env.API_KEY;
             if (!apiKey) {
-                setError("Chave da API não configurada.");
+                // FIX: Updated error message to be more generic.
+                setError("Chave da API não encontrada.");
                 setLoading(false);
                 return;
             }
@@ -89,7 +90,7 @@ const DynamicQuiz: React.FC<DynamicQuizProps> = ({ topic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o quiz. Por favor, tente novamente.");
+                setError("Não foi possível gerar o quiz. Verifique se a chave da API está correta e tente novamente.");
             } finally {
                 setLoading(false);
             }
