@@ -38,13 +38,15 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
+
     useEffect(() => {
         const generateInitialContent = async () => {
             setLoading('Preparando sua aula particular...');
             setError(null);
             
             try {
-                // FIX: Use process.env.API_KEY directly as per the guidelines.
+                // Fix: Use process.env.API_KEY to access the API key as per guidelines, which also resolves the 'import.meta.env' error.
+                // The check for the key's existence is removed based on the guideline to assume it is pre-configured.
                 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
                 const schema = {
@@ -79,7 +81,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo. Verifique o console para mais detalhes e se a chave da API está correta.");
+                setError("Não foi possível gerar o conteúdo. Verifique o console para mais detalhes.");
             } finally {
                 setLoading('');
             }
@@ -110,7 +112,7 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
             setLoading("Analisando seu erro e criando uma nova questão...");
 
             try {
-                // FIX: Use process.env.API_KEY directly as per the guidelines.
+                // Fix: Use process.env.API_KEY directly as per guidelines, removing the need for a manual check.
                 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
                 const explanationPrompt = `O usuário estava respondendo à pergunta de matemática: "${currentQ.question}". A resposta correta é "${correctAnswerText}", mas ele respondeu "${wrongAnswerText}". Explique de forma simples e encorajadora por que a resposta do usuário está incorreta e qual é o conceito correto a ser aplicado. Mantenha o tom do site 'Burguer Matic'.`;
                 const explanationResult = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: explanationPrompt });

@@ -49,8 +49,10 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
   const generateStudyMaterial = async (topic: string) => {
     setLoading(true);
     setStudyMaterial('');
+    
     try {
-      // FIX: Use process.env.API_KEY directly as per the guidelines.
+      // Fix: Use process.env.API_KEY to access the API key as per guidelines, which also resolves the 'import.meta.env' error.
+      // The check for the key's existence is removed based on the guideline to assume it is pre-configured.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
       
@@ -63,7 +65,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique o console para mais detalhes e se a chave da API está correta.");
+      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique o console para mais detalhes.");
     } finally {
       setLoading(false);
     }

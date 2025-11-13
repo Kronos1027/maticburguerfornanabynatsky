@@ -60,7 +60,8 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
         setShowLearner(false);
         
         try {
-            // FIX: Use process.env.API_KEY directly as per the guidelines.
+            // Fix: Use process.env.API_KEY to access the API key as per guidelines, which also resolves the 'import.meta.env' error.
+            // The check for the key's existence is removed based on the guideline to assume it is pre-configured.
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
             const fullPrompt = `Se houver uma imagem, analise-a. A pergunta do usuário é: "${prompt}". Você é um tutor de matemática amigável e prestativo para todas as idades, explicando conceitos de forma clara e passo a passo. Sua personalidade é fofa e encorajadora, adequada a um tema de gatos e hambúrgueres. Sempre responda em português do Brasil.`;
@@ -81,7 +82,7 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique o console para mais detalhes e se a chave da API está correta.");
+            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique o console para mais detalhes.");
         } finally {
             setLoading(false);
         }
