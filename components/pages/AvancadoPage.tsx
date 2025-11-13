@@ -47,18 +47,11 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
   }, []);
 
   const generateStudyMaterial = async (topic: string) => {
-    // FIX: Use process.env.API_KEY per coding guidelines.
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      // FIX: Updated error message to be more generic.
-      setStudyMaterial("Oops! Chave da API não encontrada.");
-      return;
-    }
-
     setLoading(true);
     setStudyMaterial('');
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      // FIX: Use process.env.API_KEY directly as per the guidelines.
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
       
       const result = await ai.models.generateContent({
@@ -70,7 +63,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique se a chave da API está correta e tente novamente.");
+      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique o console para mais detalhes e se a chave da API está correta.");
     } finally {
       setLoading(false);
     }
@@ -82,7 +75,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     <div className="relative py-12 md:py-16">
        <div className="max-w-4xl mx-auto px-4">
         <BackButton onClick={onBack} />
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8 sm:text-4xl">
             Menu Avançado
         </h1>
 

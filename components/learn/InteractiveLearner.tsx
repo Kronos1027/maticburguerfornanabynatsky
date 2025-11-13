@@ -38,22 +38,15 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    // FIX: Use process.env.API_KEY per coding guidelines.
-    const apiKey = process.env.API_KEY;
-
     useEffect(() => {
         const generateInitialContent = async () => {
-            if (!apiKey) {
-                // FIX: Updated error message to be more generic.
-                setError("Chave da API não encontrada.");
-                return;
-            }
-            const ai = new GoogleGenAI({ apiKey });
-
             setLoading('Preparando sua aula particular...');
             setError(null);
             
             try {
+                // FIX: Use process.env.API_KEY directly as per the guidelines.
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
                 const schema = {
                     type: Type.OBJECT,
                     properties: {
@@ -86,19 +79,18 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo. Verifique se a chave da API está correta e tente novamente.");
+                setError("Não foi possível gerar o conteúdo. Verifique o console para mais detalhes e se a chave da API está correta.");
             } finally {
                 setLoading('');
             }
         };
 
         generateInitialContent();
-    }, [initialTopic, apiKey]);
+    }, [initialTopic]);
 
     const handleAnswer = async (selectedIndex: number) => {
-        if (selectedAnswer !== null || !apiKey) return;
+        if (selectedAnswer !== null) return;
         
-        const ai = new GoogleGenAI({ apiKey });
         setSelectedAnswer(selectedIndex);
 
         const currentQ = remediationQuestion || questions[currentQuestionIndex];
@@ -118,6 +110,8 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
             setLoading("Analisando seu erro e criando uma nova questão...");
 
             try {
+                // FIX: Use process.env.API_KEY directly as per the guidelines.
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
                 const explanationPrompt = `O usuário estava respondendo à pergunta de matemática: "${currentQ.question}". A resposta correta é "${correctAnswerText}", mas ele respondeu "${wrongAnswerText}". Explique de forma simples e encorajadora por que a resposta do usuário está incorreta e qual é o conceito correto a ser aplicado. Mantenha o tom do site 'Burguer Matic'.`;
                 const explanationResult = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: explanationPrompt });
                 setErrorExplanation(explanationResult.text);
@@ -158,8 +152,6 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     
     if (loading && !remediationQuestion) return <LoadingSpinner message={loading} />;
     if (error) return <ErrorDisplay message={error} />;
-    // FIX: Updated error message to be more generic.
-    if (!apiKey) return <ErrorDisplay message="Chave da API não encontrada." />
     if (!explanation || questions.length === 0) return <LoadingSpinner message="Carregando conteúdo..." />;
     
     const isQuizFinished = currentQuestionIndex >= questions.length;
