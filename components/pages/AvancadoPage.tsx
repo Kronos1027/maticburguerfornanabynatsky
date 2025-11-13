@@ -50,17 +50,10 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     setLoading(true);
     setStudyMaterial('');
     
-    // FIX: Use process.env.API_KEY as per the guidelines.
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      // FIX: Updated error message to reference API_KEY.
-      setStudyMaterial("Oops! Chave da API não encontrada. Verifique se a variável API_KEY está configurada corretamente.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      // FIX: Switched to using process.env.API_KEY directly as per guidelines, and removed explicit key check.
+      // The API key is expected to be configured in the environment.
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `Você é um tutor de matemática sênior para o site 'Burguer Matic'. Crie um guia de estudo completo sobre ${topic}. Explique os conceitos-chave de forma clara, como se estivesse montando um 'hambúrguer de conhecimento'. Inclua exemplos práticos ('ingredientes') e alguns problemas para praticar ('desafios do chef'). Use um tom amigável, encorajador e a temática de gatos e comida. Responda em português do Brasil.`;
       
       const result = await ai.models.generateContent({
@@ -72,7 +65,8 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
 
     } catch (error) {
       console.error(error);
-      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Verifique se sua API Key é válida e tente novamente.");
+      // FIX: Updated error message to be more general.
+      setStudyMaterial("Oops! Algo deu errado na cozinha da IA. Tente novamente mais tarde.");
     } finally {
       setLoading(false);
     }
@@ -84,7 +78,7 @@ const AvancadoPage: React.FC<AvancadoPageProps> = ({ onBack }) => {
     <div className="relative py-12 md:py-16">
        <div className="max-w-4xl mx-auto px-4">
         <BackButton onClick={onBack} />
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8 sm:text-4xl">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
             Menu Avançado
         </h1>
 

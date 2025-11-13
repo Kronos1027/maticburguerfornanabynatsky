@@ -59,17 +59,10 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
         setSuccessfulPrompt(null);
         setShowLearner(false);
         
-        // FIX: Use process.env.API_KEY as per the guidelines.
-        const apiKey = process.env.API_KEY;
-        if (!apiKey) {
-            // FIX: Updated error message to reference API_KEY.
-            setResponse("Oops! Chave da API não encontrada. Verifique se a variável API_KEY está configurada corretamente.");
-            setLoading(false);
-            return;
-        }
-        
         try {
-            const ai = new GoogleGenAI({ apiKey });
+            // FIX: Switched to using process.env.API_KEY directly as per guidelines, and removed explicit key check.
+            // The API key is expected to be configured in the environment.
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
             const fullPrompt = `Se houver uma imagem, analise-a. A pergunta do usuário é: "${prompt}". Você é um tutor de matemática amigável e prestativo para todas as idades, explicando conceitos de forma clara e passo a passo. Sua personalidade é fofa e encorajadora, adequada a um tema de gatos e hambúrgueres. Sempre responda em português do Brasil.`;
             const parts: any[] = [{ text: fullPrompt }];
@@ -89,7 +82,8 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
 
         } catch (error) {
             console.error(error);
-            setResponse("Oops! Algo deu errado na cozinha da IA. Verifique se sua API Key é válida e tente novamente.");
+            // FIX: Updated error message to be more general.
+            setResponse("Oops! Algo deu errado na cozinha da IA. Tente novamente mais tarde.");
         } finally {
             setLoading(false);
         }
@@ -105,7 +99,7 @@ const IAPage: React.FC<IAPageProps> = ({ onBack }) => {
     <div className="relative py-12 md:py-16">
        <div className="max-w-4xl mx-auto px-4">
         <BackButton onClick={onBack} />
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8 sm:text-4xl">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-900 text-center mb-8">
             Chef IA do Burguer Matic!
         </h1>
         <p className="text-center text-lg text-amber-800 mb-12">

@@ -38,22 +38,18 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
     const [errorExplanation, setErrorExplanation] = useState('');
     const [remediationQuestion, setRemediationQuestion] = useState<QuizQuestion | null>(null);
     
-    // Get the API key once and store it.
-    // FIX: Use process.env.API_KEY as per the guidelines.
-    const apiKey = process.env.API_KEY;
+    // FIX: Removed component-scoped apiKey constant.
+    // The API key will be accessed via process.env.API_KEY inside the functions that need it.
 
     useEffect(() => {
         const generateInitialContent = async () => {
-            if (!apiKey) {
-                // FIX: Updated error message to reference API_KEY.
-                setError("Chave da API não encontrada. Verifique se a variável API_KEY está configurada.");
-                return;
-            }
+            // FIX: Removed check for apiKey. Using try/catch to handle potential issues.
             setLoading('Preparando sua aula particular...');
             setError(null);
             
             try {
-                const ai = new GoogleGenAI({ apiKey });
+                // FIX: Use process.env.API_KEY directly as per guidelines.
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
                 const schema = {
                     type: Type.OBJECT,
@@ -87,22 +83,21 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
 
             } catch (err) {
                 console.error(err);
-                setError("Não foi possível gerar o conteúdo. Verifique se sua API Key é válida e tente novamente.");
+                // FIX: Updated error message to be more general.
+                setError("Não foi possível gerar o conteúdo. Tente novamente mais tarde.");
             } finally {
                 setLoading('');
             }
         };
 
         generateInitialContent();
-    }, [initialTopic, apiKey]);
+    // FIX: Replaced apiKey dependency with initialTopic. The effect should run when the topic changes.
+    }, [initialTopic]);
 
     const handleAnswer = async (selectedIndex: number) => {
         if (selectedAnswer !== null) return;
-        if (!apiKey) {
-            setErrorExplanation("Não consigo analisar o erro sem uma API Key.");
-            return;
-        }
         
+        // FIX: Removed check for apiKey. Using try/catch to handle potential issues.
         setSelectedAnswer(selectedIndex);
 
         const currentQ = remediationQuestion || questions[currentQuestionIndex];
@@ -122,7 +117,8 @@ const InteractiveLearner: React.FC<LearnerProps> = ({ initialTopic }) => {
             setLoading("Analisando seu erro e criando uma nova questão...");
 
             try {
-                const ai = new GoogleGenAI({ apiKey });
+                // FIX: Use process.env.API_KEY directly as per guidelines.
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
                 const explanationPrompt = `O usuário estava respondendo à pergunta de matemática: "${currentQ.question}". A resposta correta é "${correctAnswerText}", mas ele respondeu "${wrongAnswerText}". Explique de forma simples e encorajadora por que a resposta do usuário está incorreta e qual é o conceito correto a ser aplicado. Mantenha o tom do site 'Burguer Matic'.`;
                 const explanationResult = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: explanationPrompt });
                 setErrorExplanation(explanationResult.text);
